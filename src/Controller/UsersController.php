@@ -59,11 +59,6 @@ class UsersController extends AppController
     {
         $user = $this->Users->get($id);
         $this->set(compact('user'));
-        /*$user = $this->Users->get($id, [
-            'contain' => [],
-        ]);
-
-        $this->set('user', $user); */
     }
 
     /**

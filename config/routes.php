@@ -70,6 +70,8 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/admin/users/login', ['controller' => 'Users', 'action' => 'login']);
     $routes->connect('/admin/users/logout', ['controller' => 'Users', 'action' => 'logout']);
 
+    $routes->connect('/admin/articles', ['controller' => 'Articles', 'action' => 'index']);
+
     /**
      * ...and connect the rest of 'Pages' controller's URLs.
      */
@@ -119,5 +121,5 @@ Router::prefix('admin', function (RouteBuilder $routes) {
     // Because you are in the admin scope,
     // you do not need to include the /admin prefix
     // or the admin route element.
-    $routes->connect('/', [ 'controller' => 'Users', 'action' => 'index', 'prefix' => 'admin', 'plugin' => null ]);
+    $routes->connect('/', [ 'controller' => 'Users', 'action' => 'index']); //, 'prefix' => 'admin', 'plugin' => null ]);
 });
