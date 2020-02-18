@@ -52,22 +52,18 @@ class AppController extends Controller
         ]);
     }
 
-    
     public function isAuthorized($user){
         // Admin can access every action
         if (isset($user['role']) && $user['role'] === 'admin') {
             return true;
         }
-
         // Default deny
         return false;
     }
 
     public function beforeFilter(Event $event)
     {
-        if (empty($this->request->getParam('prefix')) || $this->request->getParam('prefix') !== 'admin') {
-            $this->Auth->allow(['index', 'view', 'display']) ;
-        }
+        $this->Auth->allow(['index', 'view', 'display']) ;
        
     }
 }
