@@ -13,12 +13,6 @@ use Cake\Event\Event;
  */
 class UsersController extends AppController
 {
-    public function beforeFilter(Event $event)
-    {
-        parent::beforeFilter($event);
-        $this->Auth->deny() ;
-       
-    }
     public function login()
     {
         if ($this->request->is('post')) {

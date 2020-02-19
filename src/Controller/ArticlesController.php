@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Http\Exception\NotFoundException;
+use Cake\Event\Event;
 
 /**
  * Articles Controller
@@ -105,8 +106,7 @@ class ArticlesController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-    public function isAuthorized($user)
-    {
+    public function isAuthorized($user = null): bool {
         // All registered users can add articles
         if ($this->request->getParam('action') === 'add') {
             return true;
@@ -119,7 +119,13 @@ class ArticlesController extends AppController
                 return true;
             }
         }
-        
+
         return parent::isAuthorized($user);
+    }
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
+        $this->Auth->allow(['index', 'view', 'display']) ;
+       
     }
 }
