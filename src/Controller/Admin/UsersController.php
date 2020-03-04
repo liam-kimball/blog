@@ -2,6 +2,7 @@
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use Cake\Event\Event;
 
 /**
  * Users Controller
@@ -12,7 +13,6 @@ use App\Controller\AppController;
  */
 class UsersController extends AppController
 {
-
     public function login()
     {
         if ($this->request->is('post')) {
@@ -43,6 +43,7 @@ class UsersController extends AppController
         $users = $this->paginate($this->Users);
 
         $this->set(compact('users'));
+        
     }
 
     /**

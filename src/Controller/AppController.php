@@ -38,6 +38,7 @@ class AppController extends Controller
      */
     public function initialize()
     {
+        $this->loadComponent('RequestHandler', ['enableBeforeRedirect' => false]);
         $this->loadComponent('Flash');
         $this->loadComponent('Auth', [
             'authorize' => ['Controller'],
@@ -50,19 +51,20 @@ class AppController extends Controller
                 'action' => 'index'
             ]
         ]);
-    }
 
-    
-    public function isAuthorized($user)
-    {
-        if (isset($user['role']) && $user['role'] === 'admin') {
+    }
+    public function isAuthorized($user = null): bool {
+		//Admin Only allowed for Admins and Super Users
+		if ($this->request->getParam('prefix') === 'admin' && $user['role'] !== 'admin') {
+			return false;
+        } else if ( $user['role'] === 'admin' ){
             return true;
         }
-        return false;
+		return false;
     }
 
     public function beforeFilter(Event $event)
     {
-        $this->Auth->allow(['index', 'view', 'display']);
+        $this->Auth->deny();
     }
 }

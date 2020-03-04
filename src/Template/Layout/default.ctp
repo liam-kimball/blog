@@ -43,7 +43,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         <div class="top-bar-section">
             <ul class="right">
                 <li><?= $this->Html->link('Login', ['controller' => 'Users','action' => 'login']);?></li>
-                <li><?= $this->Html->link('SignUp', ['controller' => 'Users','action' => 'add']);?></li>
+                <li><?= $this->Html->link('New User', ['controller' => 'Users','action' => 'add']);?></li>
                 <li><?= $this->Html->link('LogOut', ['controller' => 'Users','action' => 'logout']);?></li>
             </ul>
         </div>

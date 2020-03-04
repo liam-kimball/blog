@@ -1,14 +1,12 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Api;
 
-use App\Controller\AppController;
+use App\Controller\Api\AppController;
 use Cake\Event\Event;
 use Cake\Http\Exception\NotFoundException;
-use Cake\Network\Exception\UnauthorizedException;
-
-use Cake\Utility\Security;
 use Firebase\JWT\JWT;
-
+use Cake\Utility\Security;
+//tests
 /**
  * Users Controller
  *
@@ -18,27 +16,16 @@ use Firebase\JWT\JWT;
  */
 class UsersController extends AppController
 {
-    
-    public function beforeFilter(Event $event)
+  
+    public function initialize()
     {
-        parent::beforeFilter($event);
-        $this->Auth->allow(['add', 'logout']);
-    }
-    
-    public function login()
-    {
-        if ($this->request->is('post')) {
-            $user = $this->Auth->identify();
-            if ($user) {
-                $this->Auth->setUser($user);
-                return $this->redirect($this->Auth->redirectUrl());
-            }
-            $this->Flash->error(__('Invalid username or password, try again'));
+        parent::initialize();
+
+        $user = $this->Auth->identify();
+        if ($user) {
+            $this->Auth->setUser($user);
         }
-    }
-    public function logout()
-    {
-        return $this->redirect($this->Auth->logout());
+        $this->Auth->allow(['add', 'token']); 
     }
 
     /**
@@ -71,34 +58,46 @@ class UsersController extends AppController
      */
     public function add()
     {
+
         $user = $this->Users->newEntity();
         if ($this->request->is('post')) {
             if($this->request->getData('role') === 'admin'){
                 if($this->Auth->user('role') === 'admin'){
                     $user = $this->Users->patchEntity($user, $this->request->getData());
                     if ($this->Users->save($user)) {
-                        $this->Flash->success(__('The user has been saved.'));
-        
-                        return $this->redirect(['action' => 'login']);
-                    }
-                    $this->Flash->error(__('The user could not be saved. Please, try again.'));
+                        $this->set('data', [
+                            'id' => $user['id'],
+                            'token' => JWT::encode(
+                                [
+                                    'sub' => $user['id'],
+                                    'exp' =>  time() + 604800
+                                ],
+                            Security::getSalt())
+                        ]);
+                    }     
+                } else {
+                    $this->set('data', [
+                        'message' => "You are not authorized to create an admin account!"
+                    ]);
                 }
             } else {
                 $user = $this->Users->patchEntity($user, $this->request->getData());
                 if ($this->Users->save($user)) {
-                    $this->Flash->success(__('The user has been saved.'));
-
-                    return $this->redirect(['action' => 'login']);
+                    $this->set('data', [
+                        'id' => $user['id'],
+                        'token' => JWT::encode(
+                            [
+                                'sub' => $user['id'],
+                                'exp' =>  time() + 604800
+                            ],
+                        Security::getSalt())
+                    ]);
                 }
-                $this->Flash->error(__('The user could not be saved. Please, try again.'));
             }
-            
-            $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
-        //$this->set(compact('user'));
         $this->set([
             'user' => $user,
-            '_serialize' => ['user']
+            '_serialize' => ['id', 'data'],
         ]);
     }
 
@@ -111,19 +110,19 @@ class UsersController extends AppController
      */
     public function edit($id = null)
     {
+        return debug($this->Auth->user());
         $user = $this->Users->get($id, [
             'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
-            if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+            $this->Users->save($user);
         }
-        $this->set(compact('user'));
+        $this->set([
+            'success' => true,
+            'user' => $user,
+            '_serialize' => ['success', 'user']
+        ]);
     }
 
     /**
@@ -137,12 +136,31 @@ class UsersController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $user = $this->Users->get($id);
-        if ($this->Users->delete($user)) {
-            $this->Flash->success(__('The user has been deleted.'));
-        } else {
-            $this->Flash->error(__('The user could not be deleted. Please, try again.'));
-        }
+        $this->Users->delete($user);
+        $this->set([
+            'success' => true,
+            'user' => $user,
+            '_serialize' => ['success']
+        ]);
+    }
 
-        return $this->redirect(['action' => 'login']);
+    public function token()
+    {
+        $user = $this->Auth->identify();
+        if (!$user) {
+            throw new UnauthorizedException('Invalid username or password');
+        }
+        $this->set([
+            'success' => true,
+            'data' => [
+                'id' => $user['id'],
+                'token' => JWT::encode([
+                    'sub' => $user['id'],
+                    'exp' =>  time() + 604800
+                ],
+                Security::getSalt())
+            ],
+            '_serialize' => ['success', 'data']
+        ]);
     }
 }

@@ -1,7 +1,7 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Api;
 
-use App\Controller\AppController;
+use App\Controller\Api\AppController;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Event\Event;
 
@@ -17,9 +17,10 @@ class ArticlesController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['index', 'view', 'display']) ;
+        //$this->Auth->allow(['index', 'view', 'display']) ;
        
     }
+
     /**
      * Index method
      *
@@ -45,7 +46,10 @@ class ArticlesController extends AppController
     public function view($id = null)
     {
         $article = $this->Articles->get($id);
-        $this->set(compact('article'));
+        $this->set([ //compact('article'));
+            'article' => $article,
+            '_serialize' => ['article']
+        ]);
     }
 
     /**
@@ -59,18 +63,12 @@ class ArticlesController extends AppController
         if ($this->request->is('post')) {
             $article = $this->Articles->patchEntity($article, $this->request->getData());
             $article->user_id = $this->Auth->user('id');
-            if ($this->Articles->save($article)) {
-                $this->Flash->success(__('The article has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The article could not be saved. Please, try again.'));
+            if ($this->Articles->save($article));
         }
-        $this->set(compact('article'));
-        /*$this->set([
+        $this->set([
             'article' => $article,
             '_serialize' => ['article']
-        ]); */
+        ]);
     }
 
     /**
@@ -87,15 +85,13 @@ class ArticlesController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $article = $this->Articles->patchEntity($article, $this->request->getData());
-            if ($this->Articles->save($article)) {
-                $this->Flash->success(__('The article has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The article could not be saved. Please, try again.'));
+            $this->Articles->save($article);
+            
         }
-        $this->set(compact('article'));
-       
+        $this->set([
+            'article' => $article,
+            '_serialize' => ['article']
+        ]);
     }
 
     /**
@@ -109,13 +105,12 @@ class ArticlesController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $article = $this->Articles->get($id);
-        if ($this->Articles->delete($article)) {
-            $this->Flash->success(__('The article has been deleted.'));
-        } else {
-            $this->Flash->error(__('The article could not be deleted. Please, try again.'));
-        }
-
-        return $this->redirect(['action' => 'index']);
+        $this->Articles->delete($article);
+        $this->set([
+            'success' => true,
+            'article' => $article,
+            '_serialize' => ['success', 'article']
+        ]);
     }
 
     public function isAuthorized($user = null): bool {
@@ -133,5 +128,6 @@ class ArticlesController extends AppController
         }
 
         return parent::isAuthorized($user);
-    }    
+    }
+
 }

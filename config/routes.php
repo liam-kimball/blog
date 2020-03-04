@@ -45,6 +45,14 @@ use Cake\Routing\Route\DashedRoute;
  */
 Router::defaultRouteClass(DashedRoute::class);
 
+Router::prefix('api', function ($routes) {
+    $routes->setExtensions(['json', 'xml']);
+    $routes->resources('Articles');
+    $routes->resources('Users');
+    Router::connect('/api/users/add', ['controller' => 'Users', 'action' => 'add', 'prefix' => 'api']);
+    $routes->fallbacks('InflectedRoute');
+});
+
 Router::scope('/', function (RouteBuilder $routes) {
     // Register scoped middleware for in scopes.
     $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware([
@@ -54,7 +62,7 @@ Router::scope('/', function (RouteBuilder $routes) {
      * Apply a middleware to the current route scope.
      * Requires middleware to be registered via `Application::routes()` with `registerMiddleware()`
      */
-    $routes->applyMiddleware('csrf');
+    //$routes->applyMiddleware('csrf');
 
     /**
      * Here, we are connecting '/' (base path) to a controller called 'Pages',
@@ -69,6 +77,8 @@ Router::scope('/', function (RouteBuilder $routes) {
     
     $routes->connect('/admin/users/login', ['controller' => 'Users', 'action' => 'login']);
     $routes->connect('/admin/users/logout', ['controller' => 'Users', 'action' => 'logout']);
+
+    $routes->connect('/admin/articles', ['controller' => 'Articles', 'action' => 'index']);
 
     /**
      * ...and connect the rest of 'Pages' controller's URLs.
@@ -95,6 +105,11 @@ Router::scope('/', function (RouteBuilder $routes) {
      * You can remove these routes once you've connected the
      * routes you want in your application.
      */
+
+    $routes->setExtensions(['json']);
+    $routes->resources('Articles');
+    $routes->resources('Admin/Users');
+
     $routes->fallbacks(DashedRoute::class);
 
 });
@@ -119,5 +134,5 @@ Router::prefix('admin', function (RouteBuilder $routes) {
     // Because you are in the admin scope,
     // you do not need to include the /admin prefix
     // or the admin route element.
-    $routes->connect('/', [ 'controller' => 'Users', 'action' => 'index', 'prefix' => 'admin', 'plugin' => null ]);
+    $routes->connect('/', [ 'controller' => 'Users', 'action' => 'index']); //, 'prefix' => 'admin', 'plugin' => null ]);
 });
