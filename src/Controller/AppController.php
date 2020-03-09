@@ -53,6 +53,13 @@ class AppController extends Controller
         ]);
 
     }
+
+    /**
+     * isAuthorized method
+     *
+     * @param string|null $id User id.
+     * @return bool Indicates whether or not the user is authorized or not
+     */
     public function isAuthorized($user = null): bool {
 		//Admin Only allowed for Admins and Super Users
 		if ($this->request->getParam('prefix') === 'admin' && $user['role'] !== 'admin') {
@@ -63,6 +70,12 @@ class AppController extends Controller
 		return false;
     }
 
+     /**
+     * beforeFilter method
+     *
+     * @param Cake\Event\Event $event
+     * @return void
+     */
     public function beforeFilter(Event $event)
     {
         $this->Auth->deny();

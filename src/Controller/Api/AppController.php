@@ -1,5 +1,10 @@
 <?php 
-// In your controller, for e.g. src/Api/AppController.php
+/**
+ * Application Controller for the API
+ *
+ *
+ * @link https://book.cakephp.org/3.0/en/controllers.html#the-app-controller
+ */
 
 namespace App\Controller\Api;
 
@@ -10,9 +15,11 @@ use Cake\Utility\Security;
 
 class AppController extends Controller
 {
-    //use \Controller\AppController;
-
-
+    /**
+     * Initialization hook method.
+     *
+     * @return void
+     */
     public function initialize()
     {
         parent::initialize();
@@ -48,6 +55,13 @@ class AppController extends Controller
         ]);
 
     }
+
+    /**
+     * isAuthorized method
+     *
+     * @param string|null $id User id.
+     * @return bool Indicates whether or not the user is authorized or not
+     */
     public function isAuthorized($user = null): bool {
 		//Admin Only allowed for Admins and Super Users
 		if ($this->request->getParam('prefix') === 'admin' && $user['role'] !== 'admin') {
@@ -58,6 +72,12 @@ class AppController extends Controller
 		return false;
     }
 
+    /**
+     * beforeFilter method
+     *
+     * @param Cake\Event\Event $event
+     * @return void
+     */
     public function beforeFilter(Event $event)
     {
         $this->Auth->deny();

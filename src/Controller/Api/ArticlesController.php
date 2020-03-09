@@ -14,6 +14,12 @@ use Cake\Event\Event;
  */
 class ArticlesController extends AppController
 {
+    /**
+     * beforeFilter method
+     *
+     * @param Event $event
+     * @return void
+     */
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
@@ -40,8 +46,7 @@ class ArticlesController extends AppController
      * View method
      *
      * @param string|null $id Article id.
-     * @return \Cake\Http\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return void
      */
     public function view($id = null)
     {
@@ -55,7 +60,7 @@ class ArticlesController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
+     * @return void
      */
     public function add()
     {
@@ -75,8 +80,7 @@ class ArticlesController extends AppController
      * Edit method
      *
      * @param string|null $id Article id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return void
      */
     public function edit($id = null)
     {
@@ -98,8 +102,7 @@ class ArticlesController extends AppController
      * Delete method
      *
      * @param string|null $id Article id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return void
      */
     public function delete($id = null)
     {
@@ -113,6 +116,12 @@ class ArticlesController extends AppController
         ]);
     }
 
+    /**
+     * isAuthorized method
+     *
+     * @param string|null $id User id.
+     * @return bool Indicates whether or not the user is authorized or not
+     */
     public function isAuthorized($user = null): bool {
         // All registered users can add articles
         if ($this->request->getParam('action') === 'add') {

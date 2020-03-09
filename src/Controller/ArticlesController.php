@@ -14,6 +14,12 @@ use Cake\Event\Event;
  */
 class ArticlesController extends AppController
 {
+    /**
+     * beforeFilter method
+     *
+     * @param Cake\Event\Event $event
+     * @return void
+     */
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
@@ -118,6 +124,12 @@ class ArticlesController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
+    /**
+     * isAuthorized method
+     *
+     * @param string|null $id User id.
+     * @return bool Indicates whether or not the user is authorized or not
+     */
     public function isAuthorized($user = null): bool {
         // All registered users can add articles
         if ($this->request->getParam('action') === 'add') {

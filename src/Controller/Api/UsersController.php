@@ -6,7 +6,7 @@ use Cake\Event\Event;
 use Cake\Http\Exception\NotFoundException;
 use Firebase\JWT\JWT;
 use Cake\Utility\Security;
-//tests
+
 /**
  * Users Controller
  *
@@ -16,7 +16,11 @@ use Cake\Utility\Security;
  */
 class UsersController extends AppController
 {
-  
+    /**
+     * Initialize method
+     *
+     * @return void
+     */
     public function initialize()
     {
         parent::initialize();
@@ -31,7 +35,7 @@ class UsersController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Http\Response|null
+     * @return void
      */
     public function index()
     {
@@ -42,8 +46,7 @@ class UsersController extends AppController
      * View method
      *
      * @param string|null $id User id.
-     * @return \Cake\Http\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return void
      */
     public function view($id = null)
     {
@@ -54,7 +57,7 @@ class UsersController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
+     * @return void
      */
     public function add()
     {
@@ -105,8 +108,7 @@ class UsersController extends AppController
      * Edit method
      *
      * @param string|null $id User id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return void
      */
     public function edit($id = null)
     {
@@ -129,8 +131,7 @@ class UsersController extends AppController
      * Delete method
      *
      * @param string|null $id User id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return void
      */
     public function delete($id = null)
     {
@@ -144,6 +145,11 @@ class UsersController extends AppController
         ]);
     }
 
+    /**
+     * Token generator method for api
+     * 
+     * @return void
+     */
     public function token()
     {
         $user = $this->Auth->identify();

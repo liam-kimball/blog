@@ -13,6 +13,11 @@ use Cake\Event\Event;
  */
 class UsersController extends AppController
 {
+    /**
+     * login method
+     *
+     * @return this redirects user
+     */
     public function login()
     {
         if ($this->request->is('post')) {
@@ -24,10 +29,17 @@ class UsersController extends AppController
             $this->Flash->error(__('Invalid username or password, try again'));
         }
     }
+
+    /**
+     * logout method
+     *
+     * @return this redirects user
+     */
     public function logout()
     {
         return $this->redirect($this->Auth->logout());
     }
+
     /**
      * Index method
      *
@@ -37,7 +49,6 @@ class UsersController extends AppController
     public $paginate = [
         'limit' => 25,
     ];
-
     public function index()
     {   
         $users = $this->paginate($this->Users);

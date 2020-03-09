@@ -18,13 +18,23 @@ use Firebase\JWT\JWT;
  */
 class UsersController extends AppController
 {
-    
+    /**
+     * beforeFilter method
+     *
+     * @param Event $event
+     * @return void
+     */
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
         $this->Auth->allow(['add', 'logout']);
     }
     
+    /**
+     * login method
+     *
+     * @return this redirects user
+     */
     public function login()
     {
         if ($this->request->is('post')) {
@@ -36,6 +46,12 @@ class UsersController extends AppController
             $this->Flash->error(__('Invalid username or password, try again'));
         }
     }
+
+    /**
+     * logout method
+     *
+     * @return this redirects user
+     */
     public function logout()
     {
         return $this->redirect($this->Auth->logout());
